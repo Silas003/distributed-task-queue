@@ -16,6 +16,6 @@ It is aimed at sending of emails.
 git clone https://github.com/yourusername/distributed-task-queue.git
 cd distributed-task-queue
 go mod download
-add .env with the email configurations to google'\s smtp
+add .env with the email configurations to google'/s smtp
 go run .
 ```
