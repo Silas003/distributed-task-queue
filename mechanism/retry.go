@@ -52,7 +52,7 @@ func MarkFailed(task_id string,client *redis.Client)error{
 
 func ViewDeadLetter(client *redis.Client) ([]internal.Mail,error){
 	ctx:=context.Background()
-	var list []Mail
+	var list []internal.Mail
 	for{
 		task_id,err:=client.RPop(ctx,"dead_letter").Result()
 		if err !=nil{
@@ -63,7 +63,7 @@ func ViewDeadLetter(client *redis.Client) ([]internal.Mail,error){
 			log.Print(err)
 		}
 
-		var mail Mail
+		var mail internal.Mail
 		err=json.Unmarshal([]byte(taskData["payload"]), &mail)
 		if err !=nil{
             log.Print(err)

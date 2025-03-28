@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"github.com/redis/go-redis/v9"
-	"distributed-task-queue/mechanism"
 	"distributed-task-queue/producers"
 	"distributed-task-queue/workers"
 	"distributed-task-queue/internal"
