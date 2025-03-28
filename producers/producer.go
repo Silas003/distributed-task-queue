@@ -7,19 +7,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	// "net/smtp"
-	// "os"
-	// "bufio"
-	// "github.com/google/uuid"
-	// "github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
 	"math/rand"
 	"strconv"
 	"time"
 	"distributed-task-queue/internal"
-	// "strings"
+
 )
 
+// Mail is a simple struct to represent an email message.
 type Mail struct {
 	Subject  string   `json:"subject"`
 	Message  []byte   `json:"message"`
@@ -27,6 +23,7 @@ type Mail struct {
 }
 
 
+// Producer sends a mail to Redis queue.
 func Producer(client *redis.Client, mail *internal.Mail) error {
 	ctx := context.Background()
 	jsonmail, err := json.Marshal(mail)
@@ -35,6 +32,8 @@ func Producer(client *redis.Client, mail *internal.Mail) error {
 		log.Println(err)
 	}
 	var task_id string
+
+	// Generate a unique task ID.
 	for {
 		random := rand.Intn(10)
 		task_id += strconv.Itoa(random)
@@ -42,6 +41,8 @@ func Producer(client *redis.Client, mail *internal.Mail) error {
 			break
 		}
 	}
+
+	// Add task to Redis hash and list.
 	err = client.HSet(
 		ctx,
 		"task:"+task_id,
@@ -54,8 +55,10 @@ func Producer(client *redis.Client, mail *internal.Mail) error {
 	if err != nil {
 		log.Println(err)
 	}
+	
+	// Add task ID to the task queue.
 	err = client.LPush(ctx, "tasks_queue", task_id).Err()
-	// err = client.LPush(ctx, "tasks", jsonmail).Err()
+
 	if err != nil {
 		fmt.Println(err.Error())
 		return err

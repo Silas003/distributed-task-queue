@@ -15,11 +15,14 @@ import (
 func main() {
 	fmt.Println("Welcome to a Simple Email Sending Distributed Task System")
 
+	// get inputs from user via cli
 	subject,message,receiver,_:=internal.GetInput()
+
+	// start a new redis client
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Password: "", 
+		DB:       0,  
 	})
 
 	email := internal.Mail{
@@ -28,11 +31,13 @@ func main() {
 		Receiver: []string{receiver},
 	}
 
+	// producer function with error handling
 	if err := producers.Producer(client, &email); err != nil {
 		log.Println(err)
 		return
 	}
 
+	// Wotker function with error handling
 	if err := workers.Worker(client,5); err != nil {
 		log.Println(err)
 		return

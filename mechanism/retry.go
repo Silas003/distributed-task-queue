@@ -3,26 +3,15 @@ package mechanism
 import (
 	"context"
 	"encoding/json"
-	// "encoding/json"
 	"fmt"
 	"log"
-
-	// "net/smtp"
-	// "os"
-	// "strconv"
-	// "strings"
 	"time"
-
-	// "github.com/google/uuid"
-	// "github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
+	"distributed-task-queue/internal"
 )
 
-type Mail struct {
-	Subject  string   `json:"subject"`
-	Message  []byte   `json:"message"`
-	Receiver []string `json:"receiver"`
-}
+
+
 
 func MarkCompleted(task_id string,client *redis.Client)error{
 	ctx:=context.Background()
@@ -61,7 +50,7 @@ func MarkFailed(task_id string,client *redis.Client)error{
 }
 
 
-func ViewDeadLetter(client *redis.Client) ([]Mail,error){
+func ViewDeadLetter(client *redis.Client) ([]internal.Mail,error){
 	ctx:=context.Background()
 	var list []Mail
 	for{
@@ -86,6 +75,8 @@ func ViewDeadLetter(client *redis.Client) ([]Mail,error){
 
 }
 
+
+// 
 func ProcessRetry(task_id string,current_retries int,client *redis.Client) error{
 	ctx:=context.Background()
 	_, err := client.HIncrBy(ctx, "task:"+task_id, "retries", 1).Result()

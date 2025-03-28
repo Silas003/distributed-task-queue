@@ -13,11 +13,11 @@ import (
 	"strconv"
 )
 
+// Worker is a function that runs in a separate goroutine.
 func Worker(client *redis.Client,maxRetries int) error {
 	ctx := context.Background()
 
-	log.Println("Worker has started...")
-
+	    // Blocking call to PopLPush. If the list is empty, it waits for a specified amount of time before returning nil.
 	for {
 
 		task_id, err := client.BRPopLPush(
@@ -34,9 +34,13 @@ func Worker(client *redis.Client,maxRetries int) error {
 			fmt.Println(err.Error())
 
 		}
+
+		// Retrieve task data from Redis. This data includes the payload (email data), retries, and status.
 		taskData, err := client.HGetAll(ctx, "task:"+task_id).Result()
 
+
 		retries, _ := strconv.Atoi(taskData["retries"])
+
 
 		if retries > maxRetries{
 
@@ -45,15 +49,21 @@ func Worker(client *redis.Client,maxRetries int) error {
 		var mail internal.Mail
 
 		if err := json.Unmarshal([]byte(taskData["payload"]), &mail); err != nil {
+
 			log.Printf("Error unmarshaling task: %v\n", err)
 			continue
+			
 		}
 
+		// Send the email using the provided mechanism. If sending fails, increment the retry count and mark the task as failed.
 		if err := internal.SendMail(&mail); err != nil {
+
 			mechanism.ProcessRetry(task_id,retries,client)
 			log.Printf("Failed to send email: %v\n", err)
 			break
+
 		} else {
+
 			mechanism.MarkCompleted(task_id,client)
 			log.Printf("Mail sent to %v", mail.Receiver)
 		}
