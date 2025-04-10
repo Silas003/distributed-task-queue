@@ -10,6 +10,7 @@ import (
 )
 
 func Isvalidmail(addr string) bool {
+	// add more domains and make it more robust using regex
 	return strings.Contains(addr, "@") && strings.Contains(addr, ".com")
 }
 
