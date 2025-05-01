@@ -1,0 +1,7 @@
+package producers
+
+
+
+func PriorityProducer(){
+	
+}
