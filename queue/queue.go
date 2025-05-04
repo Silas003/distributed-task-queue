@@ -3,7 +3,7 @@ package queue
 import (
 	"distributed-task-queue/internal"
 	"time"
-	// "sort"
+	"sort"
 	"fmt"
 )
 
@@ -20,7 +20,9 @@ type QueueList []Queue
 
 func (value *QueueList) Enqueue(task Queue) (QueueList,error){
 	list:=append(*value,task)
-
+	sort.Slice(list,func(i,j int)bool{
+		return list[i].Priority > list[j].Priority
+	})
 	*value= list
 	return *value,nil
 }

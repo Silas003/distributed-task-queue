@@ -20,7 +20,7 @@ func Worker(client *redis.Client, maxRetries int) error {
 	// Blocking call to PopLPush. If the list is empty, it waits for a specified amount of time before returning nil.
 	for {
 
-		task_id, err := client.BRPopLPush(
+		taskId, err := client.BRPopLPush(
 			ctx,
 			"tasks_queue",
 			"processing_tasks",
@@ -36,13 +36,13 @@ func Worker(client *redis.Client, maxRetries int) error {
 		}
 
 		// Retrieve task data from Redis. This data includes the payload (email data), retries, and status.
-		taskData, err := client.HGetAll(ctx, "task:"+task_id).Result()
+		taskData, err := client.HGetAll(ctx, "task:"+taskId).Result()
 
 		retries, _ := strconv.Atoi(taskData["retries"])
 
 		if retries > maxRetries {
 
-			mechanism.MarkFailed(task_id, client)
+			mechanism.MarkFailed(taskId, client)
 		}
 		var mail internal.Mail
 
@@ -56,13 +56,13 @@ func Worker(client *redis.Client, maxRetries int) error {
 		// Send the email using the provided mechanism. If sending fails, increment the retry count and mark the task as failed.
 		if err := internal.SendMail(&mail); err != nil {
 
-			mechanism.ProcessRetry(task_id, retries, client)
+			mechanism.ProcessRetry(taskId, retries, client)
 			log.Printf("Failed to send email: %v\n", err)
 			break
 
 		} else {
 
-			mechanism.MarkCompleted(task_id, client)
+			mechanism.MarkCompleted(taskId, client)
 			log.Printf("Mail sent to %v", mail.Receiver)
 		}
 
