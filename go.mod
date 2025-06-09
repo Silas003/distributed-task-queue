@@ -1,4 +1,4 @@
-module distributed-task-queue
+module github.com/Silas003/distributed-task-queue
 
 go 1.22.0
 
