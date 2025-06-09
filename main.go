@@ -21,7 +21,7 @@ import (
 
 func main() {
 	fmt.Println("Welcome to a Simple Email Sending Distributed Task System")
-
+	fmt.Println("Trial run.")
 	// get inputs from user via cli
 	from,subject,message,receiver,priority,_:=internal.GetInput()
 
