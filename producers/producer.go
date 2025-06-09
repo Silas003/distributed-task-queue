@@ -63,7 +63,7 @@ func Producer(client *redis.Client, mail *internal.Mail) error {
 		fmt.Println(err.Error())
 		return err
 	}
-	fmt.Println("Task added to queue...")
+	fmt.Println("Email added to queue...")
 
 	return nil
 }

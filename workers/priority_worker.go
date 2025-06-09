@@ -9,9 +9,10 @@ import (
 	"time"
 	"strconv"
 	"github.com/redis/go-redis/v9"
+	"gopkg.in/gomail.v2"
 )
 
-func PriorityWorker(client *redis.Client, maxRetries int) error{
+func PriorityWorker(client *redis.Client, maxRetries int,dialer *gomail.Dialer) error{
 	ctx:=context.Background()
 
 
@@ -23,7 +24,7 @@ func PriorityWorker(client *redis.Client, maxRetries int) error{
 			time.Second * 30,
 		).Result()
 
-		if err != nil {
+		if err != nil || err != redis.Nil {
 			log.Println(err)
 		}
 
@@ -45,7 +46,7 @@ func PriorityWorker(client *redis.Client, maxRetries int) error{
 			log.Println(err)
 		}
 
-		if err = internal.SendMail(&mail); err != nil{
+		if err = internal.SendMail(&mail,dialer); err != nil{
 			mechanism.ProcessRetry(taskId,retries,client)
 			log.Println(err)
 		}

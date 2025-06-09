@@ -16,10 +16,13 @@ func Isvalidmail(addr string) bool {
 	return govalidator.IsEmail(addr)
 }
 
-func GetInput()(string,string,string,int,error){
+func GetInput()(string,string,string,string,int,error){
 	reader := bufio.NewReader(os.Stdin)
-	var message, subject, receiver string
+	var from,message, subject, receiver string
 
+	fmt.Println("Enter your email address:	")
+	from, _ = reader.ReadString('\n')
+	from = strings.TrimSpace(from)
 	fmt.Println("Draft your mail Subject to recipient:	")
 	subject, _ = reader.ReadString('\n')
 	subject = strings.TrimSpace(subject)
@@ -43,5 +46,5 @@ func GetInput()(string,string,string,int,error){
 	if !Isvalidmail(receiver){
 		log.Printf("Invalid email address %s", receiver)
 	} 
-	return subject,message,receiver,priorityInt,nil
+	return from,subject,message,receiver,priorityInt,nil
 }

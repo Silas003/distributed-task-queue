@@ -11,10 +11,11 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
+	"gopkg.in/gomail.v2"
 )
 
 // Worker is a function that runs in a separate goroutine.
-func Worker(client *redis.Client, maxRetries int) error {
+func Worker(client *redis.Client, maxRetries int,dialer *gomail.Dialer) error {
 	ctx := context.Background()
 
 	// Blocking call to PopLPush. If the list is empty, it waits for a specified amount of time before returning nil.
@@ -54,7 +55,7 @@ func Worker(client *redis.Client, maxRetries int) error {
 		}
 
 		// Send the email using the provided mechanism. If sending fails, increment the retry count and mark the task as failed.
-		if err := internal.SendMail(&mail); err != nil {
+		if err := internal.SendMail(&mail,dialer); err != nil {
 
 			mechanism.ProcessRetry(taskId, retries, client)
 			log.Printf("Failed to send email: %v\n", err)
