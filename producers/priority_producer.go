@@ -2,7 +2,7 @@ package producers
 
 import (
 	"context"
-	"distributed-task-queue/queue"
+	"github.com/Silas003/distributed-task-queue/queue"
 	"encoding/json"
 	"log"
 	"strconv"

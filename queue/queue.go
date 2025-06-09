@@ -1,7 +1,7 @@
 package queue
 
 import (
-	"distributed-task-queue/internal"
+	"github.com/Silas003/distributed-task-queue/internal"
 	"time"
 	"sort"
 	"fmt"

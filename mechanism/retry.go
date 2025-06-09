@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 	"github.com/redis/go-redis/v9"
-	"distributed-task-queue/internal"
+	"github.com/Silas003/distributed-task-queue/internal"
 )
 
 

@@ -2,8 +2,8 @@ package workers
 
 import (
 	"context"
-	"distributed-task-queue/internal"
-	"distributed-task-queue/mechanism"
+	"github.com/Silas003/distributed-task-queue/internal"
+	"github.com/Silas003/distributed-task-queue/mechanism"
 	"encoding/json"
 	"log"
 	"time"

@@ -11,7 +11,7 @@ import (
 	"math/rand"
 	"strconv"
 	"time"
-	"distributed-task-queue/internal"
+	"github.com/Silas003/distributed-task-queue/internal"
 
 )
 
